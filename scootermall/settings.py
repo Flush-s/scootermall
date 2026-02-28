@@ -11,9 +11,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-hwi)_2hdh%+!gu&hfw^ra6#s@v36tw23a65b4=jhtsdb3#2z*-'  # noqa: S105
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['steelstrike.ru ' 'www.steelstrike.ru''194.58.126.240']
 
 # Application definition
 INSTALLED_APPS = [
