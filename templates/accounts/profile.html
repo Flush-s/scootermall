@@ -1,0 +1,167 @@
+{% extends 'base.html' %} {% block title %}Мой профиль - ScooterMall{% endblock %} {% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-8">Мой профиль</h1>
+
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!-- Sidebar -->
+    <aside class="lg:w-64 flex-shrink-0">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 lg:sticky lg:top-24">
+        <div class="flex items-center gap-3 p-4 bg-primary-50 rounded-xl mb-4">
+          {% if user.avatar %}
+          <img src="{{ user.avatar.url }}" alt="{{ user.username }}" class="w-12 h-12 rounded-full object-cover" />
+          {% else %}
+          <div
+            class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center text-white font-bold text-lg">
+            {{ user.first_name|first|default:user.username|first|upper }}
+          </div>
+          {% endif %}
+          <div>
+            <p class="font-semibold">{{ user.get_full_name|default:user.username }}</p>
+            <p class="text-sm text-gray-500">{{ user.email }}</p>
+          </div>
+        </div>
+
+        <nav class="space-y-1">
+          <a
+            href="{% url 'accounts:profile' %}"
+            class="flex items-center gap-3 px-4 py-3 bg-primary-50 text-primary-600 rounded-xl font-medium">
+            <i class="fas fa-user"></i>
+            <span>Профиль</span>
+          </a>
+          <a
+            href="{% url 'accounts:favorites' %}"
+            class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-colors">
+            <i class="far fa-heart"></i>
+            <span>Избранное</span>
+          </a>
+          <a
+            href="{% url 'shop:orders' %}"
+            class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-colors">
+            <i class="fas fa-box"></i>
+            <span>Мои заказы</span>
+          </a>
+          <a
+            href="{% url 'accounts:support_tickets' %}"
+            class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-colors">
+            <i class="fas fa-headset"></i>
+            <span>Поддержка</span>
+          </a>
+          <div class="border-t border-gray-100 my-2"></div>
+          <a
+            href="{% url 'accounts:logout' %}"
+            class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Выйти</span>
+          </a>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+        <h2 class="text-xl font-bold mb-6">Личные данные</h2>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+          {% csrf_token %}
+
+          <!-- Avatar -->
+          <div class="flex items-center gap-4">
+            {% if user.avatar %}
+            <img src="{{ user.avatar.url }}" alt="Avatar" class="w-20 h-20 rounded-full object-cover" />
+            {% else %}
+            <div
+              class="w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center text-white font-bold text-2xl">
+              {{ user.first_name|first|default:user.username|first|upper }}
+            </div>
+            {% endif %}
+            <div>
+              <label class="block text-sm font-medium mb-2">Фото профиля</label>
+              <input
+                type="file"
+                name="avatar"
+                accept="image/*"
+                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100" />
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium mb-2">Имя</label>
+              {{ form.first_name }}
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Фамилия</label>
+              {{ form.last_name }}
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium mb-2">Email</label>
+              {{ form.email }} {% if user.email_verified %}
+              <span class="text-xs text-green-600 flex items-center gap-1 mt-1">
+                <i class="fas fa-check-circle"></i>
+                Подтверждён
+              </span>
+              {% endif %}
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Телефон</label>
+              {{ form.phone }} {% if user.phone_verified %}
+              <span class="text-xs text-green-600 flex items-center gap-1 mt-1">
+                <i class="fas fa-check-circle"></i>
+                Подтверждён
+              </span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium mb-2">Дата рождения</label>
+              {{ form.birth_date }}
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Город</label>
+              {{ form.city }}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-2">Адрес доставки</label>
+            {{ form.address }}
+          </div>
+
+          <div class="flex items-center gap-3">
+            {{ form.newsletter_subscribed }}
+            <label class="text-sm text-gray-600">Подписаться на рассылку новостей и акций</label>
+          </div>
+
+          <div class="flex gap-4">
+            <button
+              type="submit"
+              class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-xl font-semibold transition-colors">
+              Сохранить изменения
+            </button>
+            <a
+              href="{% url 'shop:home' %}"
+              class="px-8 py-3 border border-gray-200 rounded-xl font-medium hover:bg-gray-50 transition-colors">
+              Отмена
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Change Password -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 mt-6">
+        <h2 class="text-xl font-bold mb-6">Безопасность</h2>
+        <a href="#" class="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium">
+          <i class="fas fa-lock"></i>
+          <span>Сменить пароль</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

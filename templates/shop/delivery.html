@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Доставка - ScooterMall{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<div class="bg-gray-100 py-4">
+    <div class="container mx-auto px-4">
+        <nav class="flex items-center gap-2 text-sm text-gray-600">
+            <a href="{% url 'shop:home' %}" class="hover:text-primary-600">Главная</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span class="text-gray-900">Доставка</span>
+        </nav>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Доставка и оплата</h1>
+    
+    <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                <i class="fas fa-truck text-green-600 text-2xl"></i>
+            </div>
+            <h2 class="text-xl font-bold mb-3">Бесплатная доставка</h2>
+            <p class="text-gray-600 mb-4">При заказе от 10 000 ₽ доставка по всей России бесплатно!</p>
+            <ul class="space-y-2 text-gray-600">
+                <li><i class="fas fa-check text-green-500 mr-2"></i>Курьерская доставка</li>
+                <li><i class="fas fa-check text-green-500 mr-2"></i>Пункты выдачи</li>
+                <li><i class="fas fa-check text-green-500 mr-2"></i>Почта России</li>
+            </ul>
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                <i class="fas fa-credit-card text-blue-600 text-2xl"></i>
+            </div>
+            <h2 class="text-xl font-bold mb-3">Способы оплаты</h2>
+            <ul class="space-y-2 text-gray-600">
+                <li><i class="fas fa-check text-blue-500 mr-2"></i>Банковская карта онлайн</li>
+                <li><i class="fas fa-check text-blue-500 mr-2"></i>Наличными при получении</li>
+                <li><i class="fas fa-check text-blue-500 mr-2"></i>СБП (Система быстрых платежей)</li>
+                <li><i class="fas fa-check text-blue-500 mr-2"></i>Рассрочка 0%</li>
+            </ul>
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                <i class="fas fa-clock text-purple-600 text-2xl"></i>
+            </div>
+            <h2 class="text-xl font-bold mb-3">Сроки доставки</h2>
+            <ul class="space-y-2 text-gray-600">
+                <li><i class="fas fa-map-marker-alt text-purple-500 mr-2"></i>Москва: 1-2 дня</li>
+                <li><i class="fas fa-map-marker-alt text-purple-500 mr-2"></i>СПб: 2-3 дня</li>
+                <li><i class="fas fa-map-marker-alt text-purple-500 mr-2"></i>Другие города: 3-7 дней</li>
+            </ul>
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="w-14 h-14 bg-yellow-100 rounded-xl flex items-center justify-center mb-4">
+                <i class="fas fa-box text-yellow-600 text-2xl"></i>
+            </div>
+            <h2 class="text-xl font-bold mb-3">Самовывоз</h2>
+            <p class="text-gray-600">Заберите заказ бесплатно из наших магазинов:</p>
+            <ul class="space-y-2 text-gray-600 mt-3">
+                <li><i class="fas fa-store text-yellow-500 mr-2"></i>Москва, ул. Примерная, 123</li>
+                <li><i class="fas fa-store text-yellow-500 mr-2"></i>СПб, Невский пр., 45</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

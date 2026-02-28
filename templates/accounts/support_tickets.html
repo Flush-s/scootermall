@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Поддержка - ScooterMall{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Поддержка</h1>
+    
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Sidebar -->
+        <aside class="lg:w-64 flex-shrink-0">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 lg:sticky lg:top-24">
+                <nav class="space-y-1">
+                    <a href="{% url 'accounts:profile' %}" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-colors">
+                        <i class="fas fa-user"></i>
+                        <span>Профиль</span>
+                    </a>
+                    <a href="{% url 'accounts:favorites' %}" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-colors">
+                        <i class="far fa-heart"></i>
+                        <span>Избранное</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-colors">
+                        <i class="fas fa-box"></i>
+                        <span>Мои заказы</span>
+                    </a>
+                    <a href="{% url 'accounts:support_tickets' %}" class="flex items-center gap-3 px-4 py-3 bg-primary-50 text-primary-600 rounded-xl font-medium">
+                        <i class="fas fa-headset"></i>
+                        <span>Поддержка</span>
+                    </a>
+                    <div class="border-t border-gray-100 my-2"></div>
+                    <a href="{% url 'accounts:logout' %}" class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Выйти</span>
+                    </a>
+                </nav>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="flex-1">
+            <!-- Contact Cards -->
+            <div class="grid md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center">
+                    <div class="w-14 h-14 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-phone-alt text-primary-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-semibold mb-1">Телефон</h3>
+                    <a href="tel:88001234567" class="text-primary-600 hover:underline">8 (800) 123-45-67</a>
+                    <p class="text-sm text-gray-500 mt-1">Ежедневно 9:00-21:00</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center">
+                    <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fab fa-whatsapp text-green-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-semibold mb-1">WhatsApp</h3>
+                    <a href="https://wa.me/78001234567" class="text-green-600 hover:underline">+7 (800) 123-45-67</a>
+                    <p class="text-sm text-gray-500 mt-1">Круглосуточно</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center">
+                    <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-envelope text-blue-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-semibold mb-1">Email</h3>
+                    <a href="mailto:support@scootermall.ru" class="text-blue-600 hover:underline">support@scootermall.ru</a>
+                    <p class="text-sm text-gray-500 mt-1">Ответ в течение 24ч</p>
+                </div>
+            </div>
+            
+            <!-- Create Ticket Button -->
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold">Мои обращения</h2>
+                <a href="{% url 'accounts:create_ticket' %}" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-xl font-medium transition-colors flex items-center gap-2">
+                    <i class="fas fa-plus"></i>
+                    <span>Создать обращение</span>
+                </a>
+            </div>
+            
+            <!-- Tickets List --}
+            {% if tickets %}
+            <div class="space-y-4">
+                {% for ticket in tickets %}
+                <a href="{% url 'accounts:ticket_detail' ticket.ticket_number %}" class="block bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-sm text-gray-500">#{{ ticket.ticket_number }}</span>
+                                <span class="px-3 py-1 rounded-full text-xs font-medium
+                                    {% if ticket.status == 'new' %}bg-blue-100 text-blue-700
+                                    {% elif ticket.status == 'in_progress' %}bg-yellow-100 text-yellow-700
+                                    {% elif ticket.status == 'waiting' %}bg-purple-100 text-purple-700
+                                    {% elif ticket.status == 'resolved' %}bg-green-100 text-green-700
+                                    {% else %}bg-gray-100 text-gray-700{% endif %}">
+                                    {{ ticket.get_status_display }}
+                                </span>
+                                <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                                    {{ ticket.get_category_display }}
+                                </span>
+                            </div>
+                            <h3 class="font-semibold text-lg">{{ ticket.subject }}</h3>
+                            <p class="text-gray-500 text-sm mt-1">{{ ticket.created_at|date:"d.m.Y H:i" }}</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="mt-6 flex justify-center">
+                <nav class="flex items-center gap-2">
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                    <span class="w-10 h-10 flex items-center justify-center rounded-xl bg-primary-600 text-white font-medium">{{ num }}</span>
+                    {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                    <a href="?page={{ num }}" class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors">{{ num }}</a>
+                    {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    {% endif %}
+                </nav>
+            </div>
+            {% endif %}
+            {% else %}
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+                <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-headset text-gray-300 text-4xl"></i>
+                </div>
+                <h2 class="text-xl font-bold mb-3">У вас пока нет обращений</h2>
+                <p class="text-gray-500 mb-6">Если у вас есть вопросы или проблемы, создайте обращение</p>
+                <a href="{% url 'accounts:create_ticket' %}" class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-xl font-medium transition-colors">
+                    <i class="fas fa-plus"></i>
+                    <span>Создать обращение</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

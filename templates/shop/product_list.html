@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{% if current_category %}{{ current_category.name }} - {% endif %}
+{% if current_brand %}{{ current_brand.name }} - {% endif %}
+Каталог электросамокатов - ScooterMall
+{% endblock %}
+{% load humanize %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<div class="bg-gray-100 py-4">
+    <div class="container mx-auto px-4">
+        <nav class="flex items-center gap-2 text-sm text-gray-600">
+            <a href="{% url 'shop:home' %}" class="hover:text-primary-600">Главная</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            {% if current_category %}
+            <a href="{% url 'shop:category_list' %}" class="hover:text-primary-600">Категории</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span class="text-gray-900">{{ current_category.name }}</span>
+            {% elif current_brand %}
+            <a href="{% url 'shop:brand_list' %}" class="hover:text-primary-600">Бренды</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span class="text-gray-900">{{ current_brand.name }}</span>
+            {% else %}
+            <span class="text-gray-900">Каталог</span>
+            {% endif %}
+        </nav>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Sidebar Filters -->
+        <aside class="lg:w-64 flex-shrink-0">
+            <div class="lg:sticky lg:top-24">
+                <!-- Mobile Filter Toggle -->
+                <button id="filter-toggle" class="lg:hidden w-full bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between mb-4">
+                    <span class="font-medium flex items-center gap-2">
+                        <i class="fas fa-filter"></i>
+                        Фильтры
+                    </span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                
+                <!-- Filters Form -->
+                <form id="filters-form" action="" method="get" class="hidden lg:block bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-6">
+                    <!-- Search preserve -->
+                    {% if search_query %}
+                    <input type="hidden" name="search" value="{{ search_query }}">
+                    {% endif %}
+                    
+                    <!-- Price Range -->
+                    <div>
+                        <h4 class="font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-tag text-primary-500"></i>
+                            Цена, ₽
+                        </h4>
+                        <div class="flex items-center gap-2">
+                            <input type="number" name="price_min" value="{{ request.GET.price_min }}" placeholder="От" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                            <span class="text-gray-400">-</span>
+                            <input type="number" name="price_max" value="{{ request.GET.price_max }}" placeholder="До" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                        </div>
+                    </div>
+                    
+                    <!-- Brands -->
+                    <div>
+                        <h4 class="font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-certificate text-primary-500"></i>
+                            Бренды
+                        </h4>
+                        <div class="space-y-2 max-h-48 overflow-y-auto">
+                            {% for brand in brands %}
+                            <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded transition-colors">
+                                <input type="checkbox" name="brand" value="{{ brand.id }}" 
+                                    {% if brand.id|stringformat:"s" in request.GET.brand %}checked{% endif %}
+                                    class="w-4 h-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500">
+                                <span class="text-sm">{{ brand.name }}</span>
+                                <span class="text-xs text-gray-400 ml-auto">{{ brand.products.count }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Motor Power -->
+                    <div>
+                        <h4 class="font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-bolt text-primary-500"></i>
+                            Мощность мотора
+                        </h4>
+                        <input type="number" name="motor_power_min" value="{{ request.GET.motor_power_min }}" placeholder="Мин. Вт" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    </div>
+                    
+                    <!-- Max Speed -->
+                    <div>
+                        <h4 class="font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-tachometer-alt text-primary-500"></i>
+                            Макс. скорость
+                        </h4>
+                        <input type="number" name="max_speed_min" value="{{ request.GET.max_speed_min }}" placeholder="Мин. км/ч" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    </div>
+                    
+                    <!-- Max Range -->
+                    <div>
+                        <h4 class="font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-road text-primary-500"></i>
+                            Запас хода
+                        </h4>
+                        <input type="number" name="max_range_min" value="{{ request.GET.max_range_min }}" placeholder="Мин. км" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    </div>
+                    
+                    <!-- Wheel Size -->
+                    <div>
+                        <h4 class="font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-circle text-primary-500"></i>
+                            Размер колёс
+                        </h4>
+                        <div class="flex flex-wrap gap-2">
+                            {% for size in wheel_sizes %}
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="wheel_size" value="{{ size }}" 
+                                    {% if size in request.GET.wheel_size %}checked{% endif %}
+                                    class="sr-only peer">
+                                <span class="px-3 py-1.5 bg-gray-100 rounded-lg text-sm peer-checked:bg-primary-600 peer-checked:text-white transition-colors">
+                                    {{ size }}"
+                                </span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Features -->
+                    <div>
+                        <h4 class="font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-star text-primary-500"></i>
+                            Особенности
+                        </h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded transition-colors">
+                                <input type="checkbox" name="has_app" value="1" 
+                                    {% if request.GET.has_app %}checked{% endif %}
+                                    class="w-4 h-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500">
+                                <span class="text-sm">Мобильное приложение</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded transition-colors">
+                                <input type="checkbox" name="has_cruise_control" value="1" 
+                                    {% if request.GET.has_cruise_control %}checked{% endif %}
+                                    class="w-4 h-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500">
+                                <span class="text-sm">Круиз-контроль</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Apply Button -->
+                    <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-xl font-medium transition-colors">
+                        Применить фильтры
+                    </button>
+                    
+                    <!-- Reset Button -->
+                    <a href="{% url 'shop:product_list' %}" class="block w-full text-center text-gray-500 hover:text-gray-700 py-2 transition-colors">
+                        Сбросить фильтры
+                    </a>
+                </form>
+            </div>
+        </aside>
+        
+        <!-- Products Grid -->
+        <div class="flex-1">
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold">
+                        {% if current_category %}
+                        {{ current_category.name }}
+                        {% elif current_brand %}
+                        {{ current_brand.name }}
+                        {% elif search_query %}
+                        Результаты поиска: "{{ search_query }}"
+                        {% else %}
+                        Каталог
+                        {% endif %}
+                    </h1>
+                    <p class="text-gray-500 text-sm mt-1">{{ page_obj.paginator.count }} товаров</p>
+                </div>
+                
+                <!-- Sort -->
+                <div class="flex items-center gap-3">
+                    <span class="text-sm text-gray-500 hidden sm:inline">Сортировка:</span>
+                    <select name="sort" onchange="window.location.href=this.value" class="px-4 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white">
+                        <option value="?{% if request.GET.search %}search={{ request.GET.search }}&{% endif %}{% if request.GET.price_min %}price_min={{ request.GET.price_min }}&{% endif %}{% if request.GET.price_max %}price_max={{ request.GET.price_max }}&{% endif %}{% for b in request.GET.brand %}brand={{ b }}&{% endfor %}sort=newest" {% if current_sort == 'newest' %}selected{% endif %}>По новизне</option>
+                        <option value="?{% if request.GET.search %}search={{ request.GET.search }}&{% endif %}{% if request.GET.price_min %}price_min={{ request.GET.price_min }}&{% endif %}{% if request.GET.price_max %}price_max={{ request.GET.price_max }}&{% endif %}{% for b in request.GET.brand %}brand={{ b }}&{% endfor %}sort=price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Цена: по возрастанию</option>
+                        <option value="?{% if request.GET.search %}search={{ request.GET.search }}&{% endif %}{% if request.GET.price_min %}price_min={{ request.GET.price_min }}&{% endif %}{% if request.GET.price_max %}price_max={{ request.GET.price_max }}&{% endif %}{% for b in request.GET.brand %}brand={{ b }}&{% endfor %}sort=price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Цена: по убыванию</option>
+                        <option value="?{% if request.GET.search %}search={{ request.GET.search }}&{% endif %}{% if request.GET.price_min %}price_min={{ request.GET.price_min }}&{% endif %}{% if request.GET.price_max %}price_max={{ request.GET.price_max }}&{% endif %}{% for b in request.GET.brand %}brand={{ b }}&{% endfor %}sort=rating" {% if current_sort == 'rating' %}selected{% endif %}>По рейтингу</option>
+                        <option value="?{% if request.GET.search %}search={{ request.GET.search }}&{% endif %}{% if request.GET.price_min %}price_min={{ request.GET.price_min }}&{% endif %}{% if request.GET.price_max %}price_max={{ request.GET.price_max }}&{% endif %}{% for b in request.GET.brand %}brand={{ b }}&{% endfor %}sort=name_asc" {% if current_sort == 'name_asc' %}selected{% endif %}>Название: А-Я</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Active Filters -->
+            {% if request.GET.price_min or request.GET.price_max or request.GET.brand or request.GET.has_app or request.GET.has_cruise_control %}
+            <div class="flex flex-wrap items-center gap-2 mb-6">
+                <span class="text-sm text-gray-500">Активные фильтры:</span>
+                {% if request.GET.price_min or request.GET.price_max %}
+                <span class="bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                    Цена: {{ request.GET.price_min|default:"0" }} - {{ request.GET.price_max|default:"∞" }} ₽
+                </span>
+                {% endif %}
+                <a href="{% url 'shop:product_list' %}" class="text-sm text-red-500 hover:text-red-600">Сбросить все</a>
+            </div>
+            {% endif %}
+            
+            <!-- Products Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                {% for product in products %}
+                <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                    <!-- Image -->
+                    <a href="{{ product.get_absolute_url }}" class="block relative aspect-square bg-gray-100">
+                        {% with main_image=product.images.all|first %}
+                        {% if main_image %}
+                        <img src="{{ main_image.image.url }}" alt="{{ product }}" class="w-full h-full object-cover">
+                        {% else %}
+                        <div class="w-full h-full flex items-center justify-center">
+                            <i class="fas fa-bicycle text-gray-300 text-6xl"></i>
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+                        
+                        <!-- Badges -->
+                        <div class="absolute top-3 left-3 flex flex-col gap-2">
+                            {% if product.is_new %}
+                            <span class="bg-green-500 text-white text-xs font-medium px-2 py-1 rounded-lg">NEW</span>
+                            {% endif %}
+                            {% if product.discount_percent > 0 %}
+                            <span class="bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-lg">-{{ product.discount_percent }}%</span>
+                            {% endif %}
+                            {% if product.is_featured %}
+                            <span class="bg-accent-500 text-white text-xs font-medium px-2 py-1 rounded-lg">HIT</span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Compare & Favorite -->
+                        <div class="absolute top-3 right-3 flex flex-col gap-2">
+                            <a href="{% url 'shop:add_to_compare' product.id %}" class="w-9 h-9 bg-white/90 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition-colors shadow-sm" title="Добавить в сравнение">
+                                <i class="fas fa-exchange-alt text-gray-400 hover:text-primary-500 text-sm"></i>
+                            </a>
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'accounts:add_favorite' product.slug %}" class="w-9 h-9 bg-white/90 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition-colors shadow-sm" title="Добавить в избранное">
+                                <i class="far fa-heart text-gray-400 hover:text-red-500"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </a>
+                    
+                    <!-- Content -->
+                    <div class="p-4">
+                        <a href="{{ product.brand.get_absolute_url }}" class="text-xs text-primary-600 font-medium hover:underline">{{ product.brand.name }}</a>
+                        <a href="{{ product.get_absolute_url }}" class="block font-semibold text-gray-900 hover:text-primary-600 transition-colors line-clamp-2 mb-2 text-sm md:text-base">
+                            {{ product.name }}
+                        </a>
+                        
+                        <!-- Rating -->
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="flex items-center gap-0.5">
+                                {% for i in "12345" %}
+                                <i class="fas fa-star {% if forloop.counter <= product.average_rating %}text-accent-500{% else %}text-gray-300{% endif %} text-xs"></i>
+                                {% endfor %}
+                            </div>
+                            <span class="text-xs text-gray-500">({{ product.review_count }})</span>
+                        </div>
+                        
+                        <!-- Specs -->
+                        <div class="flex flex-wrap gap-1.5 mb-3 text-xs text-gray-500">
+                            {% if product.max_speed %}
+                            <span class="bg-gray-100 px-2 py-1 rounded-lg">{{ product.max_speed }} км/ч</span>
+                            {% endif %}
+                            {% if product.max_range %}
+                            <span class="bg-gray-100 px-2 py-1 rounded-lg">{{ product.max_range }} км</span>
+                            {% endif %}
+                            {% if product.motor_power %}
+                            <span class="bg-gray-100 px-2 py-1 rounded-lg">{{ product.motor_power }} Вт</span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Price & Action -->
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-lg font-bold text-gray-900">{{ product.price|intcomma }} ₽</p>
+                                {% if product.old_price %}
+                                <p class="text-sm text-gray-400 line-through">{{ product.old_price|intcomma }} ₽</p>
+                                {% endif %}
+                            </div>
+                            <form action="{% url 'cart:cart_add' product.slug %}" method="post" class="add-to-cart-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="w-10 h-10 bg-primary-600 hover:bg-primary-700 text-white rounded-xl flex items-center justify-center transition-colors">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-span-full text-center py-16">
+                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-search text-gray-400 text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Товары не найдены</h3>
+                    <p class="text-gray-500 mb-4">Попробуйте изменить параметры фильтров или поиска</p>
+                    <a href="{% url 'shop:product_list' %}" class="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium">
+                        <i class="fas fa-times"></i>
+                        <span>Сбросить фильтры</span>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="mt-8 flex justify-center">
+                <nav class="flex items-center gap-2">
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                    <span class="w-10 h-10 flex items-center justify-center rounded-xl bg-primary-600 text-white font-medium">
+                        {{ num }}
+                    </span>
+                    {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                    <a href="?page={{ num }}" class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors">
+                        {{ num }}
+                    </a>
+                    {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    {% endif %}
+                </nav>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Mobile filter toggle
+    document.getElementById('filter-toggle')?.addEventListener('click', function() {
+        const form = document.getElementById('filters-form');
+        form.classList.toggle('hidden');
+        this.querySelector('.fa-chevron-down').classList.toggle('rotate-180');
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Гарантия - ScooterMall{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<div class="bg-gray-100 py-4">
+    <div class="container mx-auto px-4">
+        <nav class="flex items-center gap-2 text-sm text-gray-600">
+            <a href="{% url 'shop:home' %}" class="hover:text-primary-600">Главная</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span class="text-gray-900">Гарантия</span>
+        </nav>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Гарантия и возврат</h1>
+    
+    <div class="max-w-3xl mx-auto space-y-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="flex items-start gap-4">
+                <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-shield-alt text-green-600 text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold mb-2">Официальная гарантия</h2>
+                    <p class="text-gray-600">На все электросамокаты предоставляется гарантия производителя от 1 до 3 лет в зависимости от модели. Гарантия распространяется на:</p>
+                    <ul class="mt-3 space-y-2 text-gray-600">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Мотор и контроллер</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Батарею</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Дисплей</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Зарядное устройство</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="flex items-start gap-4">
+                <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-undo text-blue-600 text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold mb-2">Возврат в течение 14 дней</h2>
+                    <p class="text-gray-600">Если товар не подошёл, вы можете вернуть его в течение 14 дней с момента получения. Товар должен быть:</p>
+                    <ul class="mt-3 space-y-2 text-gray-600">
+                        <li><i class="fas fa-check text-blue-500 mr-2"></i>Без следов использования</li>
+                        <li><i class="fas fa-check text-blue-500 mr-2"></i>В оригинальной упаковке</li>
+                        <li><i class="fas fa-check text-blue-500 mr-2"></i>С полным комплектом</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="flex items-start gap-4">
+                <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-tools text-purple-600 text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold mb-2">Сервисное обслуживание</h2>
+                    <p class="text-gray-600">У нас есть собственный сервисный центр, где вы можете:</p>
+                    <ul class="mt-3 space-y-2 text-gray-600">
+                        <li><i class="fas fa-check text-purple-500 mr-2"></i>Провести ТО</li>
+                        <li><i class="fas fa-check text-purple-500 mr-2"></i>Отремонтировать самокат</li>
+                        <li><i class="fas fa-check text-purple-500 mr-2"></i>Заменить запчасти</li>
+                        <li><i class="fas fa-check text-purple-500 mr-2"></i>Апгрейдить комплектующие</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-primary-50 rounded-2xl p-6 text-center">
+            <h3 class="text-lg font-bold mb-2">Нужна помощь?</h3>
+            <p class="text-gray-600 mb-4">Наши специалисты ответят на все вопросы</p>
+            <a href="{% url 'accounts:support_tickets' %}" class="inline-flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-primary-700 transition-colors">
+                <i class="fas fa-headset"></i>
+                <span>Написать в поддержку</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

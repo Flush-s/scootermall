@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Бренды - ScooterMall{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<div class="bg-gray-100 py-4">
+    <div class="container mx-auto px-4">
+        <nav class="flex items-center gap-2 text-sm text-gray-600">
+            <a href="{% url 'shop:home' %}" class="hover:text-primary-600">Главная</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span class="text-gray-900">Бренды</span>
+        </nav>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-4">Бренды</h1>
+    <p class="text-gray-500 mb-8">Официальный дилер ведущих производителей электросамокатов</p>
+    
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        {% for brand in brands %}
+        <a href="{{ brand.get_absolute_url }}" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-lg hover:border-primary-300 transition-all group">
+            <div class="aspect-square bg-gray-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-gray-100 transition-colors">
+                {% if brand.logo %}
+                <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" class="max-w-full max-h-full object-contain p-4 grayscale group-hover:grayscale-0 transition-all">
+                {% else %}
+                <div class="text-center">
+                    <i class="fas fa-certificate text-gray-300 text-5xl mb-2"></i>
+                    <p class="text-gray-400 font-medium">{{ brand.name }}</p>
+                </div>
+                {% endif %}
+            </div>
+            <h3 class="font-semibold text-lg text-center group-hover:text-primary-600 transition-colors">{{ brand.name }}</h3>
+            <p class="text-sm text-gray-500 text-center">{{ brand.products.count }} товаров</p>
+            {% if brand.country %}
+            <p class="text-xs text-gray-400 text-center mt-1">{{ brand.country }}</p>
+            {% endif %}
+        </a>
+        {% empty %}
+        <div class="col-span-full text-center py-16">
+            <i class="fas fa-certificate text-gray-300 text-6xl mb-4"></i>
+            <p class="text-gray-500">Бренды скоро появятся</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

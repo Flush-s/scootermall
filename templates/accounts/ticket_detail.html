@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Обращение #{{ ticket.ticket_number }} - ScooterMall{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-3xl mx-auto">
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-2 text-sm text-gray-600 mb-6">
+            <a href="{% url 'shop:home' %}" class="hover:text-primary-600">Главная</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <a href="{% url 'accounts:support_tickets' %}" class="hover:text-primary-600">Поддержка</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span class="text-gray-900">#{{ ticket.ticket_number }}</span>
+        </nav>
+        
+        <!-- Ticket Header -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+            <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <h1 class="text-2xl font-bold">#{{ ticket.ticket_number }}</h1>
+                        <span class="px-3 py-1 rounded-full text-sm font-medium
+                            {% if ticket.status == 'new' %}bg-blue-100 text-blue-700
+                            {% elif ticket.status == 'in_progress' %}bg-yellow-100 text-yellow-700
+                            {% elif ticket.status == 'waiting' %}bg-purple-100 text-purple-700
+                            {% elif ticket.status == 'resolved' %}bg-green-100 text-green-700
+                            {% else %}bg-gray-100 text-gray-700{% endif %}">
+                            {{ ticket.get_status_display }}
+                        </span>
+                    </div>
+                    <p class="text-gray-500">{{ ticket.get_category_display }} | Создано {{ ticket.created_at|date:"d.m.Y H:i" }}</p>
+                </div>
+            </div>
+            <h2 class="text-lg font-semibold mb-2">{{ ticket.subject }}</h2>
+            <p class="text-gray-600">{{ ticket.message }}</p>
+        </div>
+        
+        <!-- Messages -->
+        <div class="space-y-4 mb-6">
+            {% for message in messages %}
+            <div class="{% if message.is_staff %}bg-primary-50{% else %}bg-white{% endif %} rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 {% if message.is_staff %}bg-primary-600{% else %}bg-gray-200{% endif %} rounded-full flex items-center justify-center flex-shrink-0">
+                        {% if message.is_staff %}
+                        <i class="fas fa-headset text-white"></i>
+                        {% else %}
+                        <span class="font-medium text-gray-600">{{ message.user.first_name|first|default:message.user.username|first|upper }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="font-semibold">{% if message.is_staff %}Служба поддержки{% else %}{{ message.user.get_full_name|default:message.user.username }}{% endif %}</span>
+                            <span class="text-sm text-gray-500">{{ message.created_at|date:"d.m.Y H:i" }}</span>
+                        </div>
+                        <p class="text-gray-700">{{ message.message }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Reply Form -->
+        {% if ticket.status != 'closed' and ticket.status != 'resolved' %}
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h3 class="font-semibold mb-4">Ответить</h3>
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                <div>
+                    {{ form.message }}
+                </div>
+                <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-xl font-semibold transition-colors">
+                    Отправить ответ
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

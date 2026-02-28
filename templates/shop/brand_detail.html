@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ brand.name }} - Бренд - ScooterMall{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<div class="bg-gray-100 py-4">
+    <div class="container mx-auto px-4">
+        <nav class="flex items-center gap-2 text-sm text-gray-600">
+            <a href="{% url 'shop:home' %}" class="hover:text-primary-600">Главная</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <a href="{% url 'shop:brand_list' %}" class="hover:text-primary-600">Бренды</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span class="text-gray-900">{{ brand.name }}</span>
+        </nav>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-8">
+    <!-- Brand Header -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-8">
+        <div class="flex flex-col md:flex-row items-center gap-6">
+            {% if brand.logo %}
+            <img src="{{ brand.logo.url }}" alt="{{ brand.name }}" class="w-32 h-32 object-contain">
+            {% else %}
+            <div class="w-32 h-32 bg-gray-100 rounded-xl flex items-center justify-center">
+                <i class="fas fa-certificate text-gray-300 text-5xl"></i>
+            </div>
+            {% endif %}
+            <div class="text-center md:text-left">
+                <h1 class="text-3xl font-bold mb-2">{{ brand.name }}</h1>
+                {% if brand.country %}
+                <p class="text-gray-500 mb-2"><i class="fas fa-globe mr-2"></i>{{ brand.country }}</p>
+                {% endif %}
+                <p class="text-gray-600 max-w-2xl">{{ brand.description|default:"Официальный дилер продукции "|add:brand.name }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Products -->
+    <h2 class="text-2xl font-bold mb-6">Товары бренда {{ brand.name }}</h2>
+    
+    {% if products %}
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        {% for product in products %}
+        <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+            <a href="{{ product.get_absolute_url }}" class="block relative aspect-square bg-gray-100">
+                {% with main_image=product.images.all|first %}
+                {% if main_image %}
+                <img src="{{ main_image.image.url }}" alt="{{ product }}" class="w-full h-full object-cover">
+                {% else %}
+                <div class="w-full h-full flex items-center justify-center">
+                    <i class="fas fa-bicycle text-gray-300 text-6xl"></i>
+                </div>
+                {% endif %}
+                {% endwith %}
+                
+                {% if product.discount_percent > 0 %}
+                <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-lg">-{{ product.discount_percent }}%</span>
+                {% endif %}
+            </a>
+            
+            <div class="p-4">
+                <a href="{{ product.get_absolute_url }}" class="block font-semibold text-gray-900 hover:text-primary-600 transition-colors line-clamp-2 mb-2">
+                    {{ product.name }}
+                </a>
+                <div class="flex items-baseline gap-2">
+                    <span class="text-xl font-bold text-gray-900">{{ product.price }} ₽</span>
+                    {% if product.old_price %}
+                    <span class="text-sm text-gray-400 line-through">{{ product.old_price }} ₽</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-16">
+        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-box-open text-gray-300 text-4xl"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">Пока нет товаров</h3>
+        <p class="text-gray-500">Товары этого бренда скоро появятся</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

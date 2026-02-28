@@ -1,0 +1,38 @@
+<!-- Mobile Bottom Navigation -->
+<nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40 pb-safe">
+    <div class="flex justify-around items-center py-2">
+        <a href="{% url 'shop:home' %}" class="flex flex-col items-center gap-1 p-2 text-gray-600 hover:text-primary-600 transition-colors">
+            <i class="fas fa-home text-xl"></i>
+            <span class="text-xs">Главная</span>
+        </a>
+        <a href="{% url 'shop:product_list' %}" class="flex flex-col items-center gap-1 p-2 text-gray-600 hover:text-primary-600 transition-colors">
+            <i class="fas fa-th-large text-xl"></i>
+            <span class="text-xs">Каталог</span>
+        </a>
+        <a href="{% url 'cart:cart_detail' %}" class="flex flex-col items-center gap-1 p-2 text-gray-600 hover:text-primary-600 transition-colors relative">
+            <div class="relative">
+                <i class="fas fa-shopping-cart text-xl"></i>
+                {% if cart_items_count > 0 %}
+                <span class="absolute -top-2 -right-2 w-4 h-4 bg-primary-600 text-white text-xs rounded-full flex items-center justify-center">
+                    {{ cart_items_count }}
+                </span>
+                {% endif %}
+            </div>
+            <span class="text-xs">Корзина</span>
+        </a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'accounts:profile' %}" class="flex flex-col items-center gap-1 p-2 text-gray-600 hover:text-primary-600 transition-colors">
+            <i class="fas fa-user text-xl"></i>
+            <span class="text-xs">Профиль</span>
+        </a>
+        {% else %}
+        <a href="{% url 'accounts:login' %}" class="flex flex-col items-center gap-1 p-2 text-gray-600 hover:text-primary-600 transition-colors">
+            <i class="fas fa-user text-xl"></i>
+            <span class="text-xs">Войти</span>
+        </a>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- Spacer for mobile bottom nav -->
+<div class="lg:hidden h-16"></div>

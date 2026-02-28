@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}Оформление заказа - ScooterMall{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<div class="bg-gray-100 py-4">
+    <div class="container mx-auto px-4">
+        <nav class="flex items-center gap-2 text-sm text-gray-600">
+            <a href="{% url 'shop:home' %}" class="hover:text-primary-600">Главная</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <a href="{% url 'cart:cart_detail' %}" class="hover:text-primary-600">Корзина</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span class="text-gray-900">Оформление заказа</span>
+        </nav>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Оформление заказа</h1>
+    
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Order Form -->
+        <div class="flex-1">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    <!-- Contact Info -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                            <i class="fas fa-user text-primary-500"></i>
+                            Контактная информация
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Имя *</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Фамилия *</label>
+                                {{ form.last_name }}
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Телефон *</label>
+                                {{ form.phone }}
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Email *</label>
+                                {{ form.email }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Delivery Address -->
+                    <div class="pt-6 border-t border-gray-100">
+                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                            <i class="fas fa-map-marker-alt text-primary-500"></i>
+                            Адрес доставки
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Город *</label>
+                                {{ form.city }}
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Индекс</label>
+                                {{ form.zip_code }}
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium mb-2">Адрес *</label>
+                            {{ form.address }}
+                        </div>
+                    </div>
+                    
+                    <!-- Comment -->
+                    <div class="pt-6 border-t border-gray-100">
+                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                            <i class="fas fa-comment text-primary-500"></i>
+                            Комментарий
+                        </h3>
+                        {{ form.comment }}
+                    </div>
+                    
+                    <!-- Submit -->
+                    <div class="pt-6 border-t border-gray-100">
+                        <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white py-4 rounded-xl font-semibold transition-colors">
+                            Подтвердить заказ
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="lg:w-96">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-24">
+                <h2 class="text-xl font-bold mb-6">Ваш заказ</h2>
+                
+                <!-- Items -->
+                <div class="space-y-4 mb-6 max-h-64 overflow-y-auto">
+                    {% for item in cart.items.all %}
+                    <div class="flex gap-3">
+                        {% with main_image=item.product.images.all|first %}
+                        {% if main_image %}
+                        <img src="{{ main_image.image.url }}" alt="{{ item.product }}" class="w-16 h-16 object-cover rounded-lg">
+                        {% else %}
+                        <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-bicycle text-gray-300"></i>
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+                        <div class="flex-1">
+                            <p class="font-medium text-sm">{{ item.product.name }}</p>
+                            <p class="text-gray-500 text-sm">{{ item.quantity }} шт. × {{ item.product.price }} ₽</p>
+                        </div>
+                        <p class="font-semibold">{{ item.total_price }} ₽</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Promo Code -->
+                <div class="border-t border-gray-100 pt-4 mb-4">
+                    <label class="block text-sm font-medium mb-2">Промокод</label>
+                    <div class="flex gap-2">
+                        <input type="text" name="promo_code" form="order-form" 
+                            class="flex-1 px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            placeholder="Введите код">
+                    </div>
+                </div>
+                
+                <!-- Totals -->
+                <div class="border-t border-gray-100 pt-4 space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Товары ({{ cart.total_items }})</span>
+                        <span>{{ cart.total_price }} ₽</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Доставка</span>
+                        <span class="text-green-600">Бесплатно</span>
+                    </div>
+                    {% if discount > 0 %}
+                    <div class="flex justify-between text-green-600">
+                        <span>Скидка</span>
+                        <span>-{{ discount }} ₽</span>
+                    </div>
+                    {% endif %}
+                    <div class="border-t border-gray-100 pt-2 mt-2">
+                        <div class="flex justify-between text-lg font-bold">
+                            <span>Итого</span>
+                            <span class="text-primary-600">{{ cart.total_price }} ₽</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

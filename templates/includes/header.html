@@ -1,0 +1,293 @@
+<!-- Top Bar -->
+<div class="bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm">
+    <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+        <div class="flex items-center gap-6">
+            <span class="flex items-center gap-2">
+                <i class="fas fa-phone-alt text-accent-500"></i>
+                <a href="tel:88001234567" class="hover:text-accent-500 transition-colors">8 (800) 123-45-67</a>
+            </span>
+            <span class="hidden md:flex items-center gap-2">
+                <i class="fas fa-clock text-accent-500"></i>
+                <span>Ежедневно 9:00-21:00</span>
+            </span>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="{% url 'accounts:support_tickets' %}" class="hover:text-accent-500 transition-colors flex items-center gap-1">
+                <i class="fas fa-headset"></i>
+                <span class="hidden sm:inline">Поддержка</span>
+            </a>
+            <a href="#" class="hover:text-accent-500 transition-colors flex items-center gap-1">
+                <i class="fas fa-map-marker-alt"></i>
+                <span class="hidden sm:inline">Магазины</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Header -->
+<header class="bg-white shadow-sm sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center justify-between gap-4">
+            <!-- Logo -->
+            <a href="{% url 'shop:home' %}" class="flex items-center gap-2 flex-shrink-0">
+                <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-bolt text-white text-xl"></i>
+                </div>
+                <div class="hidden sm:block">
+                    <span class="text-xl font-bold gradient-text">ScooterMall</span>
+                    <span class="text-xs text-gray-500 block -mt-1">Электросамокаты</span>
+                </div>
+            </a>
+            
+            <!-- Search Bar -->
+            <div class="flex-1 max-w-2xl relative hidden md:block">
+                <form action="{% url 'shop:product_list' %}" method="get" class="relative">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        id="search-input"
+                        value="{{ search_query }}"
+                        placeholder="Поиск по названию, бренду или артикулу..."
+                        class="w-full pl-12 pr-4 py-3 bg-gray-100 border-0 rounded-2xl focus:ring-2 focus:ring-primary-500 focus:bg-white transition-all"
+                        autocomplete="off"
+                    >
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary-600 text-white px-4 py-1.5 rounded-xl hover:bg-primary-700 transition-colors text-sm">
+                        Найти
+                    </button>
+                </form>
+                <!-- Search Results Dropdown -->
+                <div id="search-results" class="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 hidden overflow-hidden z-50">
+                    <!-- AJAX results will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="flex items-center gap-2 sm:gap-4">
+                <!-- Compare -->
+                <a href="{% url 'shop:compare' %}" class="hidden lg:flex flex-col items-center gap-1 p-2 hover:bg-gray-100 rounded-xl transition-colors">
+                    <div class="relative">
+                        <i class="fas fa-exchange-alt text-gray-600 text-lg"></i>
+                        {% if compare_count > 0 %}
+                        <span class="absolute -top-2 -right-2 w-4 h-4 bg-accent-500 text-white text-xs rounded-full flex items-center justify-center">{{ compare_count }}</span>
+                        {% endif %}
+                    </div>
+                    <span class="text-xs text-gray-600">Сравнение</span>
+                </a>
+                
+                <!-- Favorites -->
+                {% if user.is_authenticated %}
+                <a href="{% url 'accounts:favorites' %}" class="flex flex-col items-center gap-1 p-2 hover:bg-gray-100 rounded-xl transition-colors">
+                    <div class="relative">
+                        <i class="far fa-heart text-gray-600 text-lg"></i>
+                    </div>
+                    <span class="text-xs text-gray-600 hidden sm:inline">Избранное</span>
+                </a>
+                {% endif %}
+                
+                <!-- Cart -->
+                <a href="{% url 'cart:cart_detail' %}" class="flex flex-col items-center gap-1 p-2 hover:bg-gray-100 rounded-xl transition-colors">
+                    <div class="relative">
+                        <i class="fas fa-shopping-cart text-gray-600 text-lg"></i>
+                        <span id="cart-count" class="absolute -top-2 -right-2 w-5 h-5 bg-primary-600 text-white text-xs rounded-full flex items-center justify-center font-medium">
+                            {{ cart_items_count|default:0 }}
+                        </span>
+                    </div>
+                    <span class="text-xs text-gray-600 hidden sm:inline">Корзина</span>
+                </a>
+                
+                <!-- User -->
+                {% if user.is_authenticated %}
+                <div class="relative group">
+                    <button class="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-xl transition-colors">
+                        {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" alt="{{ user.username }}" class="w-8 h-8 rounded-full object-cover">
+                        {% else %}
+                        <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center text-white font-medium">
+                            {{ user.first_name|first|default:user.username|first|upper }}
+                        </div>
+                        {% endif %}
+                        <span class="hidden lg:block text-sm font-medium">{{ user.first_name|default:user.username }}</span>
+                        <i class="fas fa-chevron-down text-gray-400 text-xs hidden lg:block"></i>
+                    </button>
+                    
+                    <!-- Dropdown -->
+                    <div class="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                        <div class="p-4 border-b border-gray-100">
+                            <p class="font-medium">{{ user.get_full_name|default:user.username }}</p>
+                            <p class="text-sm text-gray-500">{{ user.email }}</p>
+                        </div>
+                        <div class="p-2">
+                            <a href="{% url 'accounts:profile' %}" class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-xl transition-colors">
+                                <i class="fas fa-user text-gray-400"></i>
+                                <span>Профиль</span>
+                            </a>
+                            <a href="{% url 'accounts:favorites' %}" class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-xl transition-colors">
+                                <i class="far fa-heart text-gray-400"></i>
+                                <span>Избранное</span>
+                            </a>
+                            <a href="{% url 'accounts:support_tickets' %}" class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 rounded-xl transition-colors">
+                                <i class="fas fa-headset text-gray-400"></i>
+                                <span>Поддержка</span>
+                            </a>
+                            <div class="border-t border-gray-100 my-2"></div>
+                            <a href="{% url 'accounts:logout' %}" class="flex items-center gap-3 px-4 py-2 hover:bg-red-50 text-red-600 rounded-xl transition-colors">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Выйти</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{% url 'accounts:login' %}" class="flex items-center gap-2 bg-primary-600 text-white px-4 py-2 rounded-xl hover:bg-primary-700 transition-colors">
+                    <i class="fas fa-user"></i>
+                    <span class="hidden sm:inline">Войти</span>
+                </a>
+                {% endif %}
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="lg:hidden p-2 hover:bg-gray-100 rounded-xl transition-colors">
+                    <i class="fas fa-bars text-gray-600 text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Search -->
+        <div class="mt-4 md:hidden">
+            <form action="{% url 'shop:product_list' %}" method="get" class="relative">
+                <input 
+                    type="text" 
+                    name="search" 
+                    value="{{ search_query }}"
+                    placeholder="Поиск..."
+                    class="w-full pl-10 pr-4 py-2.5 bg-gray-100 border-0 rounded-xl focus:ring-2 focus:ring-primary-500"
+                >
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="border-t border-gray-100 hidden lg:block">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center gap-8">
+                <!-- Catalog Button -->
+                <div class="relative group">
+                    <button class="flex items-center gap-2 bg-primary-600 text-white px-6 py-3 -mb-px font-medium hover:bg-primary-700 transition-colors">
+                        <i class="fas fa-th-large"></i>
+                        <span>Каталог</span>
+                        <i class="fas fa-chevron-down text-sm"></i>
+                    </button>
+                    
+                    <!-- Mega Menu -->
+                    <div class="absolute top-full left-0 w-72 bg-white shadow-xl border border-gray-100 rounded-b-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                        <div class="p-2">
+                            {% for category in categories %}
+                            <a href="{{ category.get_absolute_url }}" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-xl transition-colors">
+                                {% if category.image %}
+                                <img src="{{ category.image.url }}" alt="{{ category.name }}" class="w-10 h-10 rounded-lg object-cover">
+                                {% else %}
+                                <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-bicycle text-gray-400"></i>
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <p class="font-medium">{{ category.name }}</p>
+                                    <p class="text-xs text-gray-500">{{ category.products.count }} товаров</p>
+                                </div>
+                            </a>
+                            {% empty %}
+                            <a href="{% url 'shop:product_list' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-xl transition-colors">
+                                <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-bicycle text-gray-400"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Все самокаты</p>
+                                    <p class="text-xs text-gray-500">Перейти в каталог</p>
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Nav Links -->
+                <div class="flex items-center gap-6">
+                    <a href="{% url 'shop:product_list' %}?sort=newest" class="py-3 text-gray-700 hover:text-primary-600 font-medium transition-colors">Новинки</a>
+                    <a href="{% url 'shop:product_list' %}?is_featured=true" class="py-3 text-gray-700 hover:text-primary-600 font-medium transition-colors">Хиты</a>
+                    <a href="{% url 'shop:brand_list' %}" class="py-3 text-gray-700 hover:text-primary-600 font-medium transition-colors">Бренды</a>
+                    <a href="{% url 'shop:sales' %}" class="py-3 text-accent-600 hover:text-accent-700 font-medium transition-colors">
+                        <i class="fas fa-percent mr-1"></i>
+                        Акции
+                    </a>
+                    <a href="{% url 'shop:delivery' %}" class="py-3 text-gray-700 hover:text-primary-600 font-medium transition-colors">Доставка</a>
+                    <a href="{% url 'shop:warranty' %}" class="py-3 text-gray-700 hover:text-primary-600 font-medium transition-colors">Гарантия</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="hidden lg:hidden fixed inset-0 z-50">
+    <div class="absolute inset-0 bg-black/50" onclick="document.getElementById('mobile-menu').classList.add('hidden')"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-80 bg-white shadow-xl overflow-y-auto">
+        <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+            <span class="font-bold text-lg">Меню</span>
+            <button onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="p-2 hover:bg-gray-100 rounded-lg">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div class="p-4 space-y-2">
+            <a href="{% url 'shop:home' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-xl">
+                <i class="fas fa-home text-primary-600"></i>
+                <span>Главная</span>
+            </a>
+            <a href="{% url 'shop:product_list' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-xl">
+                <i class="fas fa-th-large text-primary-600"></i>
+                <span>Каталог</span>
+            </a>
+            <a href="{% url 'shop:brand_list' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-xl">
+                <i class="fas fa-certificate text-primary-600"></i>
+                <span>Бренды</span>
+            </a>
+            <a href="{% url 'shop:sales' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-xl">
+                <i class="fas fa-percent text-accent-600"></i>
+                <span>Акции</span>
+            </a>
+            <div class="border-t border-gray-100 my-2"></div>
+            {% if user.is_authenticated %}
+            <a href="{% url 'accounts:profile' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-xl">
+                <i class="fas fa-user text-gray-600"></i>
+                <span>Профиль</span>
+            </a>
+            <a href="{% url 'accounts:favorites' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-xl">
+                <i class="far fa-heart text-gray-600"></i>
+                <span>Избранное</span>
+            </a>
+            <a href="{% url 'cart:cart_detail' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-xl">
+                <i class="fas fa-shopping-cart text-gray-600"></i>
+                <span>Корзина</span>
+            </a>
+            <a href="{% url 'accounts:support_tickets' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-xl">
+                <i class="fas fa-headset text-gray-600"></i>
+                <span>Поддержка</span>
+            </a>
+            <div class="border-t border-gray-100 my-2"></div>
+            <a href="{% url 'accounts:logout' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-red-50 text-red-600 rounded-xl">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Выйти</span>
+            </a>
+            {% else %}
+            <a href="{% url 'accounts:login' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-xl">
+                <i class="fas fa-sign-in-alt text-primary-600"></i>
+                <span>Войти</span>
+            </a>
+            <a href="{% url 'accounts:register' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-xl">
+                <i class="fas fa-user-plus text-primary-600"></i>
+                <span>Регистрация</span>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Сравнение товаров - ScooterMall{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<div class="bg-gray-100 py-4">
+    <div class="container mx-auto px-4">
+        <nav class="flex items-center gap-2 text-sm text-gray-600">
+            <a href="{% url 'shop:home' %}" class="hover:text-primary-600">Главная</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span class="text-gray-900">Сравнение</span>
+        </nav>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-4">Сравнение товаров</h1>
+    <p class="text-gray-500 mb-8">Сравните характеристики и выберите лучший</p>
+    
+    {% if compare_products %}
+    <div class="overflow-x-auto">
+        <table class="w-full bg-white rounded-2xl shadow-sm border border-gray-100">
+            <thead>
+                <tr>
+                    <th class="p-4 text-left border-b border-gray-100 min-w-[150px]">Характеристика</th>
+                    {% for product in compare_products %}
+                    <th class="p-4 text-center border-b border-gray-100 min-w-[200px]">
+                        <div class="relative">
+                            <a href="{% url 'shop:remove_from_compare' product.id %}" class="absolute -top-2 -right-2 w-6 h-6 bg-red-100 text-red-500 rounded-full flex items-center justify-center hover:bg-red-200">
+                                <i class="fas fa-times text-xs"></i>
+                            </a>
+                            <a href="{{ product.get_absolute_url }}" class="block">
+                                {% with main_image=product.images.all|first %}
+                                {% if main_image %}
+                                <img src="{{ main_image.image.url }}" alt="{{ product }}" class="w-32 h-32 object-cover rounded-xl mx-auto mb-3">
+                                {% else %}
+                                <div class="w-32 h-32 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-bicycle text-gray-300 text-4xl"></i>
+                                </div>
+                                {% endif %}
+                                {% endwith %}
+                                <p class="font-semibold text-sm">{{ product.name }}</p>
+                                <p class="text-primary-600 font-bold mt-1">{{ product.price }} ₽</p>
+                            </a>
+                        </div>
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                <tr>
+                    <td class="p-4 font-medium text-gray-500">Бренд</td>
+                    {% for product in compare_products %}
+                    <td class="p-4 text-center">{{ product.brand.name }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="p-4 font-medium text-gray-500">Макс. скорость</td>
+                    {% for product in compare_products %}
+                    <td class="p-4 text-center">{% if product.max_speed %}{{ product.max_speed }} км/ч{% else %}-{% endif %}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="p-4 font-medium text-gray-500">Запас хода</td>
+                    {% for product in compare_products %}
+                    <td class="p-4 text-center">{% if product.max_range %}{{ product.max_range }} км{% else %}-{% endif %}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="p-4 font-medium text-gray-500">Мощность мотора</td>
+                    {% for product in compare_products %}
+                    <td class="p-4 text-center">{% if product.motor_power %}{{ product.motor_power }} Вт{% else %}-{% endif %}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="p-4 font-medium text-gray-500">Батарея</td>
+                    {% for product in compare_products %}
+                    <td class="p-4 text-center">{% if product.battery_capacity %}{{ product.battery_capacity }} Ач{% else %}-{% endif %}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="p-4 font-medium text-gray-500">Вес</td>
+                    {% for product in compare_products %}
+                    <td class="p-4 text-center">{% if product.weight %}{{ product.weight }} кг{% else %}-{% endif %}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="p-4 font-medium text-gray-500">Макс. нагрузка</td>
+                    {% for product in compare_products %}
+                    <td class="p-4 text-center">{% if product.max_load %}{{ product.max_load }} кг{% else %}-{% endif %}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="p-4 font-medium text-gray-500">Размер колёс</td>
+                    {% for product in compare_products %}
+                    <td class="p-4 text-center">{% if product.wheel_size %}{{ product.wheel_size }}"{% else %}-{% endif %}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="p-4 font-medium text-gray-500">Защита</td>
+                    {% for product in compare_products %}
+                    <td class="p-4 text-center">{% if product.waterproof_rating %}{{ product.waterproof_rating }}{% else %}-{% endif %}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="p-4 font-medium text-gray-500">Приложение</td>
+                    {% for product in compare_products %}
+                    <td class="p-4 text-center">{% if product.has_app %}<i class="fas fa-check text-green-500"></i>{% else %}<i class="fas fa-times text-gray-300"></i>{% endif %}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="p-4 font-medium text-gray-500">Круиз-контроль</td>
+                    {% for product in compare_products %}
+                    <td class="p-4 text-center">{% if product.has_cruise_control %}<i class="fas fa-check text-green-500"></i>{% else %}<i class="fas fa-times text-gray-300"></i>{% endif %}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="p-4 font-medium text-gray-500"></td>
+                    {% for product in compare_products %}
+                    <td class="p-4 text-center">
+                        <a href="{{ product.get_absolute_url }}" class="bg-primary-600 text-white px-4 py-2 rounded-xl text-sm hover:bg-primary-700 transition-colors">Подробнее</a>
+                    </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="mt-6 text-center">
+        <a href="{% url 'shop:product_list' %}" class="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium">
+            <i class="fas fa-plus"></i>
+            <span>Добавить ещё товар</span>
+        </a>
+    </div>
+    {% else %}
+    <div class="text-center py-16">
+        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-exchange-alt text-gray-300 text-4xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold mb-3">Список сравнения пуст</h2>
+        <p class="text-gray-500 mb-6 max-w-md mx-auto">Добавьте товары в сравнение, чтобы увидеть их характеристики рядом</p>
+        <a href="{% url 'shop:product_list' %}" class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-xl font-medium transition-colors">
+            <i class="fas fa-th-large"></i>
+            <span>Перейти в каталог</span>
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

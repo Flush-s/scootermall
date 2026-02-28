@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Написать отзыв - {{ product }} - ScooterMall{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<div class="bg-gray-100 py-4">
+    <div class="container mx-auto px-4">
+        <nav class="flex items-center gap-2 text-sm text-gray-600">
+            <a href="{% url 'shop:home' %}" class="hover:text-primary-600">Главная</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <a href="{{ product.get_absolute_url }}" class="hover:text-primary-600">{{ product.name }}</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span class="text-gray-900">Написать отзыв</span>
+        </nav>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold mb-2">Написать отзыв</h1>
+        <p class="text-gray-500 mb-8">{{ product }}</p>
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Rating -->
+                <div>
+                    <label class="block text-sm font-medium mb-3">Ваша оценка</label>
+                    <div class="flex gap-2">
+                        {% for i in "12345" %}
+                        <label class="cursor-pointer">
+                            <input type="radio" name="rating" value="{{ forloop.counter }}" class="sr-only peer" required>
+                            <i class="fas fa-star text-3xl text-gray-300 peer-checked:text-accent-500 hover:text-accent-400 transition-colors"></i>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Title -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">Заголовок отзыва</label>
+                    <input type="text" name="title" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder="Например: Отличный самокат для города!">
+                </div>
+                
+                <!-- Text -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">Ваш отзыв</label>
+                    <textarea name="text" rows="5" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder="Расскажите о вашем опыте использования..."></textarea>
+                </div>
+                
+                <!-- Pros -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">Достоинства</label>
+                    <textarea name="pros" rows="3"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder="Что вам понравилось?"></textarea>
+                </div>
+                
+                <!-- Cons -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">Недостатки</label>
+                    <textarea name="cons" rows="3"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder="Что можно улучшить?"></textarea>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-xl font-semibold transition-colors">
+                        Отправить отзыв
+                    </button>
+                    <a href="{{ product.get_absolute_url }}" class="px-8 py-3 border border-gray-200 rounded-xl font-medium hover:bg-gray-50 transition-colors">
+                        Отмена
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Star rating interaction
+    document.querySelectorAll('input[name="rating"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const stars = document.querySelectorAll('input[name="rating"] + i');
+            stars.forEach((star, index) => {
+                if (index < this.value) {
+                    star.classList.add('text-accent-500');
+                    star.classList.remove('text-gray-300');
+                } else {
+                    star.classList.remove('text-accent-500');
+                    star.classList.add('text-gray-300');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

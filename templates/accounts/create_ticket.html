@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Создать обращение - ScooterMall{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-2 text-sm text-gray-600 mb-6">
+            <a href="{% url 'shop:home' %}" class="hover:text-primary-600">Главная</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <a href="{% url 'accounts:support_tickets' %}" class="hover:text-primary-600">Поддержка</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span class="text-gray-900">Новое обращение</span>
+        </nav>
+        
+        <h1 class="text-3xl font-bold mb-8">Создать обращение</h1>
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Категория обращения</label>
+                    {{ form.category }}
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Тема</label>
+                    {{ form.subject }}
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Описание проблемы</label>
+                    {{ form.message }}
+                    <p class="text-sm text-gray-500 mt-2">Подробно опишите ваш вопрос или проблему. Чем больше информации вы предоставите, тем быстрее мы сможем помочь.</p>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-xl font-semibold transition-colors">
+                        Отправить обращение
+                    </button>
+                    <a href="{% url 'accounts:support_tickets' %}" class="px-8 py-3 border border-gray-200 rounded-xl font-medium hover:bg-gray-50 transition-colors">
+                        Отмена
+                    </a>
+                </div>
+            </form>
+        </div>
+        
+        <!-- FAQ -->
+        <div class="mt-8">
+            <h2 class="text-xl font-bold mb-4">Часто задаваемые вопросы</h2>
+            <div class="space-y-3">
+                <details class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <summary class="px-6 py-4 font-medium cursor-pointer hover:bg-gray-50 transition-colors flex items-center justify-between">
+                        <span>Как отследить заказ?</span>
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </summary>
+                    <div class="px-6 py-4 border-t border-gray-100 text-gray-600">
+                        После оформления заказа вы получите email с трек-номером для отслеживания. Также информация о доставке доступна в разделе "Мои заказы".
+                    </div>
+                </details>
+                <details class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <summary class="px-6 py-4 font-medium cursor-pointer hover:bg-gray-50 transition-colors flex items-center justify-between">
+                        <span>Как оформить возврат?</span>
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </summary>
+                    <div class="px-6 py-4 border-t border-gray-100 text-gray-600">
+                        Возврат возможен в течение 14 дней с момента получения товара. Создайте обращение в категории "Возврат" и мы поможем с оформлением.
+                    </div>
+                </details>
+                <details class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <summary class="px-6 py-4 font-medium cursor-pointer hover:bg-gray-50 transition-colors flex items-center justify-between">
+                        <span>Где находится сервисный центр?</span>
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </summary>
+                    <div class="px-6 py-4 border-t border-gray-100 text-gray-600">
+                        Наш сервисный центр расположен по адресу: Москва, ул. Примерная, 123. Работаем ежедневно с 10:00 до 20:00.
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

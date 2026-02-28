@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScooterMall - Магазин электросамокатов</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        primary: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-bolt text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent">ScooterMall</span>
+                    </div>
+                </div>
+                <a href="https://github.com" class="text-gray-600 hover:text-primary-600">
+                    <i class="fab fa-github text-2xl"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">ScooterMall</h1>
+            <p class="text-xl md:text-2xl text-primary-100 mb-8 max-w-2xl mx-auto">
+                Современный магазин электросамокатов на Django + Tailwind CSS
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full">
+                    <i class="fas fa-check-circle mr-2"></i>Django 5.0
+                </span>
+                <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full">
+                    <i class="fas fa-check-circle mr-2"></i>Tailwind CSS
+                </span>
+                <span class="bg-white/20 backdrop-blur px-4 py-2 rounded-full">
+                    <i class="fas fa-check-circle mr-2"></i>Адаптивный дизайн
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-4">Сравнение с конкурентами</h2>
+            <p class="text-gray-500 text-center mb-12 max-w-2xl mx-auto">
+                ScooterMall превосходит всех конкурентов по ключевым критериям
+            </p>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <thead class="bg-gray-900 text-white">
+                        <tr>
+                            <th class="px-6 py-4 text-left">Критерий</th>
+                            <th class="px-6 py-4 text-center">Elektro-mall</th>
+                            <th class="px-6 py-4 text-center">LuxWheel</th>
+                            <th class="px-6 py-4 text-center">Kugoo-Russia</th>
+                            <th class="px-6 py-4 text-center bg-primary-600">ScooterMall</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-medium">Каталоги</td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">4</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">4</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-red-100 text-red-700 px-2 py-1 rounded">3</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded font-bold">5</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-medium">Фильтры, сортировка</td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">3</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded">5</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-red-100 text-red-700 px-2 py-1 rounded">2</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded font-bold">5</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-medium">Корзина</td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">4</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded">5</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">3</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded font-bold">5</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-medium">Современный дизайн</td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">3</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">4</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">4</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded font-bold">5</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-medium">Адаптивность</td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">4</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">4</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">4</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded font-bold">5</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-medium">Личный кабинет</td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">3</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">4</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-red-100 text-red-700 px-2 py-1 rounded">2</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded font-bold">5</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-medium">Отзывы / обратная связь</td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">4</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">3</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">3</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded font-bold">5</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-medium">Навигация</td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">4</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">4</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">3</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded font-bold">5</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-medium">Поиск</td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">4</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">4</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-red-100 text-red-700 px-2 py-1 rounded">2</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded font-bold">5</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-medium">Техподдержка</td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">3</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">3</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">4</span></td>
+                            <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-700 px-2 py-1 rounded font-bold">5</span></td>
+                        </tr>
+                        <tr class="bg-gray-900 text-white font-bold">
+                            <td class="px-6 py-4">Итог (средняя оценка)</td>
+                            <td class="px-6 py-4 text-center">3.6</td>
+                            <td class="px-6 py-4 text-center">4.0</td>
+                            <td class="px-6 py-4 text-center">3.0</td>
+                            <td class="px-6 py-4 text-center bg-primary-600 text-2xl">5.0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Функционал</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div class="p-6 bg-gray-50 rounded-2xl">
+                    <div class="w-14 h-14 bg-primary-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-th-large text-primary-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Каталог</h3>
+                    <ul class="text-gray-600 space-y-1">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Категории и подкатегории</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Расширенные фильтры</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Множественный выбор</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Сортировка</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>AJAX поиск</li>
+                    </ul>
+                </div>
+                
+                <div class="p-6 bg-gray-50 rounded-2xl">
+                    <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-shopping-cart text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Корзина</h3>
+                    <ul class="text-gray-600 space-y-1">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Изменение количества</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Удаление товаров</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Расчёт стоимости</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Промокоды</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>AJAX обновление</li>
+                    </ul>
+                </div>
+                
+                <div class="p-6 bg-gray-50 rounded-2xl">
+                    <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-user text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Личный кабинет</h3>
+                    <ul class="text-gray-600 space-y-1">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Регистрация/авторизация</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Редактирование профиля</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Избранное</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>История заказов</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Система поддержки</li>
+                    </ul>
+                </div>
+                
+                <div class="p-6 bg-gray-50 rounded-2xl">
+                    <div class="w-14 h-14 bg-yellow-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-star text-yellow-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Отзывы</h3>
+                    <ul class="text-gray-600 space-y-1">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Рейтинг 5 звёзд</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Достоинства/недостатки</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Модерация</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Средний рейтинг</li>
+                    </ul>
+                </div>
+                
+                <div class="p-6 bg-gray-50 rounded-2xl">
+                    <div class="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-headset text-red-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Поддержка</h3>
+                    <ul class="text-gray-600 space-y-1">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Создание тикетов</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Категории обращений</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Переписка</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Статусы</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>FAQ</li>
+                    </ul>
+                </div>
+                
+                <div class="p-6 bg-gray-50 rounded-2xl">
+                    <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-mobile-alt text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Адаптивность</h3>
+                    <ul class="text-gray-600 space-y-1">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Mobile-first</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Tablet</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Desktop</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Touch-friendly</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Скриншоты</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <img src="media/banners/hero_banner.png" alt="Hero Banner" class="w-full aspect-video object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold">Главная страница</h3>
+                        <p class="text-gray-500 text-sm">Современный hero-баннер</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <img src="media/products/xiaomi_pro2.png" alt="Product" class="w-full aspect-square object-cover bg-gray-100">
+                    <div class="p-4">
+                        <h3 class="font-semibold">Карточка товара</h3>
+                        <p class="text-gray-500 text-sm">Xiaomi Mi Electric Scooter Pro 2</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <img src="media/products/dualtron_thunder.png" alt="Product" class="w-full aspect-square object-cover bg-gray-100">
+                    <div class="p-4">
+                        <h3 class="font-semibold">Мощные модели</h3>
+                        <p class="text-gray-500 text-sm">Dualtron Thunder 5400W</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="py-16 bg-gray-900 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-8">Технологический стек</h2>
+            
+            <div class="flex flex-wrap justify-center gap-6 max-w-4xl mx-auto">
+                <div class="flex items-center gap-3 bg-white/10 px-6 py-3 rounded-xl">
+                    <i class="fab fa-python text-3xl text-yellow-400"></i>
+                    <div class="text-left">
+                        <p class="font-semibold">Django 5.0</p>
+                        <p class="text-sm text-gray-400">Backend framework</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 bg-white/10 px-6 py-3 rounded-xl">
+                    <i class="fab fa-css3 text-3xl text-blue-400"></i>
+                    <div class="text-left">
+                        <p class="font-semibold">Tailwind CSS</p>
+                        <p class="text-sm text-gray-400">Styling</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 bg-white/10 px-6 py-3 rounded-xl">
+                    <i class="fas fa-database text-3xl text-green-400"></i>
+                    <div class="text-left">
+                        <p class="font-semibold">SQLite</p>
+                        <p class="text-sm text-gray-400">Database</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 bg-white/10 px-6 py-3 rounded-xl">
+                    <i class="fab fa-js text-3xl text-yellow-300"></i>
+                    <div class="text-left">
+                        <p class="font-semibold">Vanilla JS</p>
+                        <p class="text-sm text-gray-400">Interactivity</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-950 text-gray-400 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024 ScooterMall. Все права защищены.</p>
+            <p class="mt-2 text-sm">Создано с <i class="fas fa-heart text-red-500"></i> на Django + Tailwind CSS</p>
+        </div>
+    </footer>
+</body>
+</html>

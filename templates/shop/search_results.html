@@ -1,0 +1,32 @@
+{% load humanize %}
+{% if results %}
+<div class="p-2">
+    {% for product in results %}
+    <a href="/product/{{ product.slug }}/" class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl transition-colors">
+        <div class="w-12 h-12 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
+            {% if product.image %}
+            <img src="{{ product.image }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+            {% else %}
+            <div class="w-full h-full flex items-center justify-center">
+                <i class="fas fa-bicycle text-gray-300"></i>
+            </div>
+            {% endif %}
+        </div>
+        <div class="flex-1 min-w-0">
+            <p class="font-medium text-sm truncate">{{ product.name }}</p>
+            <p class="text-primary-600 font-semibold">{{ product.price|default:0|intcomma }} ₽</p>
+        </div>
+    </a>
+    {% endfor %}
+    <div class="border-t border-gray-100 mt-2 pt-2">
+        <a href="/catalog/?search={{ request.GET.q }}" class="block text-center text-primary-600 hover:text-primary-700 font-medium py-2">
+            Все результаты
+        </a>
+    </div>
+</div>
+{% else %}
+<div class="p-6 text-center">
+    <i class="fas fa-search text-gray-300 text-3xl mb-2"></i>
+    <p class="text-gray-500 text-sm">Ничего не найдено</p>
+</div>
+{% endif %}

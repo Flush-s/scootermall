@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Акции и скидки - ScooterMall{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<div class="bg-gray-100 py-4">
+    <div class="container mx-auto px-4">
+        <nav class="flex items-center gap-2 text-sm text-gray-600">
+            <a href="{% url 'shop:home' %}" class="hover:text-primary-600">Главная</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span class="text-gray-900">Акции</span>
+        </nav>
+    </div>
+</div>
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-4">Акции и скидки</h1>
+    <p class="text-gray-500 mb-8">Лучшие предложения на электросамокаты</p>
+    
+    {% if sale_products %}
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        {% for product in sale_products %}
+        <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+            <a href="{{ product.get_absolute_url }}" class="block relative aspect-square bg-gray-100">
+                {% with main_image=product.images.all|first %}
+                {% if main_image %}
+                <img src="{{ main_image.image.url }}" alt="{{ product }}" class="w-full h-full object-cover">
+                {% else %}
+                <div class="w-full h-full flex items-center justify-center">
+                    <i class="fas fa-bicycle text-gray-300 text-6xl"></i>
+                </div>
+                {% endif %}
+                {% endwith %}
+                
+                <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-lg">-{{ product.discount_percent }}%</span>
+            </a>
+            
+            <div class="p-4">
+                <a href="{{ product.brand.get_absolute_url }}" class="text-xs text-primary-600 font-medium">{{ product.brand.name }}</a>
+                <a href="{{ product.get_absolute_url }}" class="block font-semibold text-gray-900 hover:text-primary-600 transition-colors line-clamp-2 mb-2">
+                    {{ product.name }}
+                </a>
+                <div class="flex items-baseline gap-2">
+                    <span class="text-xl font-bold text-gray-900">{{ product.price }} ₽</span>
+                    <span class="text-sm text-gray-400 line-through">{{ product.old_price }} ₽</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-16">
+        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-percent text-gray-300 text-4xl"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">Пока нет акций</h3>
+        <p class="text-gray-500">Следите за обновлениями!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

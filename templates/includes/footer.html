@@ -1,0 +1,111 @@
+<footer class="bg-gray-900 text-white mt-auto">
+    <!-- Main Footer -->
+    <div class="container mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Company Info -->
+            <div>
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-bolt text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold">ScooterMall</span>
+                    </div>
+                </div>
+                <p class="text-gray-400 mb-4">Лучшие электросамокаты от ведущих мировых брендов. Гарантия качества, сервисное обслуживание, быстрая доставка.</p>
+                <div class="flex gap-3">
+                    <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary-600 transition-colors">
+                        <i class="fab fa-vk"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary-600 transition-colors">
+                        <i class="fab fa-telegram"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary-600 transition-colors">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary-600 transition-colors">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Catalog -->
+            <div>
+                <h3 class="font-bold text-lg mb-4">Каталог</h3>
+                <ul class="space-y-2">
+                    <li><a href="{% url 'shop:product_list' %}" class="text-gray-400 hover:text-white transition-colors">Все самокаты</a></li>
+                    <li><a href="{% url 'shop:product_list' %}" class="text-gray-400 hover:text-white transition-colors">Городские самокаты</a></li>
+                    <li><a href="{% url 'shop:product_list' %}" class="text-gray-400 hover:text-white transition-colors">Внедорожные</a></li>
+                    <li><a href="{% url 'shop:product_list' %}" class="text-gray-400 hover:text-white transition-colors">Лёгкие и компактные</a></li>
+                    <li><a href="{% url 'shop:product_list' %}" class="text-gray-400 hover:text-white transition-colors">Мощные</a></li>
+                    <li><a href="{% url 'shop:brand_list' %}" class="text-gray-400 hover:text-white transition-colors">Бренды</a></li>
+                </ul>
+            </div>
+            
+            <!-- Info -->
+            <div>
+                <h3 class="font-bold text-lg mb-4">Информация</h3>
+                <ul class="space-y-2">
+                    <li><a href="{% url 'shop:home' %}" class="text-gray-400 hover:text-white transition-colors">О компании</a></li>
+                    <li><a href="{% url 'shop:delivery' %}" class="text-gray-400 hover:text-white transition-colors">Доставка и оплата</a></li>
+                    <li><a href="{% url 'shop:warranty' %}" class="text-gray-400 hover:text-white transition-colors">Гарантия и возврат</a></li>
+                    <li><a href="{% url 'accounts:support_tickets' %}" class="text-gray-400 hover:text-white transition-colors">Сервисный центр</a></li>
+                    <li><a href="{% url 'shop:home' %}#reviews" class="text-gray-400 hover:text-white transition-colors">Отзывы</a></li>
+                    <li><a href="{% url 'accounts:support_tickets' %}" class="text-gray-400 hover:text-white transition-colors">Контакты</a></li>
+                </ul>
+            </div>
+            
+            <!-- Contacts -->
+            <div>
+                <h3 class="font-bold text-lg mb-4">Контакты</h3>
+                <ul class="space-y-3">
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-phone-alt text-primary-500 mt-1"></i>
+                        <div>
+                            <a href="tel:88001234567" class="hover:text-primary-500 transition-colors">8 (800) 123-45-67</a>
+                            <p class="text-sm text-gray-500">Бесплатно по России</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-envelope text-primary-500 mt-1"></i>
+                        <div>
+                            <a href="mailto:info@scootermall.ru" class="hover:text-primary-500 transition-colors">info@scootermall.ru</a>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-clock text-primary-500 mt-1"></i>
+                        <div>
+                            <p>Ежедневно 9:00-21:00</p>
+                            <p class="text-sm text-gray-500">Без выходных</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-map-marker-alt text-primary-500 mt-1"></i>
+                        <div>
+                            <p>Москва, ул. Примерная, 123</p>
+                            <p class="text-sm text-gray-500">Показать на карте</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Bar -->
+    <div class="border-t border-gray-800">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-sm">&copy; 2024 ScooterMall. Все права защищены.</p>
+                <div class="flex items-center gap-4">
+                    <a href="#" class="text-gray-500 hover:text-white text-sm transition-colors">Политика конфиденциальности</a>
+                    <a href="#" class="text-gray-500 hover:text-white text-sm transition-colors">Пользовательское соглашение</a>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fab fa-cc-visa text-2xl text-gray-400"></i>
+                    <i class="fab fa-cc-mastercard text-2xl text-gray-400"></i>
+                    <i class="fab fa-cc-mir text-2xl text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

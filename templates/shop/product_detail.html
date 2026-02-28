@@ -1,0 +1,423 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}{{ product }} - купить в ScooterMall{% endblock %}
+{% block meta_description %}{{ product.short_description|default:product.description|truncatechars:160 }}{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<div class="bg-gray-100 py-4">
+    <div class="container mx-auto px-4">
+        <nav class="flex items-center gap-2 text-sm text-gray-600 flex-wrap">
+            <a href="{% url 'shop:home' %}" class="hover:text-primary-600">Главная</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <a href="{% url 'shop:product_list' %}" class="hover:text-primary-600">Каталог</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <a href="{{ product.category.get_absolute_url }}" class="hover:text-primary-600">{{ product.category.name }}</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span class="text-gray-900">{{ product.name }}</span>
+        </nav>
+    </div>
+</div>
+
+<!-- Product Detail -->
+<div class="container mx-auto px-4 py-8">
+    <div class="grid lg:grid-cols-2 gap-8 mb-12">
+        <!-- Images -->
+        <div>
+            <div class="bg-white rounded-2xl p-4 mb-4">
+                <div class="aspect-square bg-gray-100 rounded-xl overflow-hidden relative">
+                    {% with main_image=product.images.filter|first %}
+                    {% if main_image %}
+                    <img id="main-image" src="{{ main_image.image.url }}" alt="{{ product }}" class="w-full h-full object-cover">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center">
+                        <i class="fas fa-bicycle text-gray-300 text-8xl"></i>
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                    
+                    <!-- Badges -->
+                    <div class="absolute top-4 left-4 flex flex-col gap-2">
+                        {% if product.is_new %}
+                        <span class="bg-green-500 text-white text-sm font-medium px-3 py-1 rounded-lg">NEW</span>
+                        {% endif %}
+                        {% if product.discount_percent > 0 %}
+                        <span class="bg-red-500 text-white text-sm font-medium px-3 py-1 rounded-lg">-{{ product.discount_percent }}%</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Thumbnails -->
+            {% if product.images.count > 1 %}
+            <div class="flex gap-2 overflow-x-auto pb-2">
+                {% for image in product.images.all %}
+                <button onclick="document.getElementById('main-image').src='{{ image.image.url }}'" 
+                    class="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-xl overflow-hidden border-2 {% if image.is_main %}border-primary-600{% else %}border-transparent{% endif %} hover:border-primary-400 transition-colors">
+                    <img src="{{ image.image.url }}" alt="{{ product }}" class="w-full h-full object-cover">
+                </button>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Info -->
+        <div>
+            <div class="flex items-start justify-between gap-4 mb-4">
+                <div>
+                    <a href="{{ product.brand.get_absolute_url }}" class="text-primary-600 font-medium hover:underline">{{ product.brand.name }}</a>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900">{{ product.name }}</h1>
+                </div>
+                {% if user.is_authenticated %}
+                <a href="{% url 'accounts:add_favorite' product.slug %}" class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center hover:bg-gray-200 transition-colors flex-shrink-0">
+                    <i class="far fa-heart text-gray-600 text-xl"></i>
+                </a>
+                {% endif %}
+            </div>
+            
+            <!-- Rating -->
+            <div class="flex items-center gap-4 mb-6">
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-1">
+                        {% for i in "12345" %}
+                        <i class="fas fa-star {% if forloop.counter <= average_rating %}text-accent-500{% else %}text-gray-300{% endif %}"></i>
+                        {% endfor %}
+                    </div>
+                    <span class="font-medium">{{ average_rating }}</span>
+                </div>
+                <a href="#reviews" class="text-primary-600 hover:underline">
+                    {{ review_count }} отзывов
+                </a>
+                <span class="text-gray-300">|</span>
+                <span class="text-green-600 flex items-center gap-1">
+                    <i class="fas fa-check-circle"></i>
+                    В наличии
+                </span>
+            </div>
+            
+            <!-- Price -->
+            <div class="bg-gray-50 rounded-2xl p-6 mb-6">
+                <div class="flex items-baseline gap-3 mb-4">
+                    <span class="text-3xl md:text-4xl font-bold text-gray-900">{{ product.price|intcomma }} ₽</span>
+                    {% if product.old_price %}
+                    <span class="text-xl text-gray-400 line-through">{{ product.old_price|intcomma }} ₽</span>
+                    <span class="bg-red-100 text-red-600 px-2 py-1 rounded-lg text-sm font-medium">Экономия {{ product.old_price|add:"-"|add:product.price|intcomma }} ₽</span>
+                    {% endif %}
+                </div>
+                
+                <!-- Actions -->
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <form action="{% url 'cart:cart_add' product.slug %}" method="post" class="flex-1">
+                        {% csrf_token %}
+                        <div class="flex gap-3">
+                            <div class="flex items-center border border-gray-200 rounded-xl bg-white">
+                                <button type="button" onclick="this.parentElement.querySelector('input').value--" class="px-4 py-3 hover:bg-gray-100 rounded-l-xl transition-colors">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" class="w-16 text-center border-0 focus:ring-0 p-0">
+                                <button type="button" onclick="this.parentElement.querySelector('input').value++" class="px-4 py-3 hover:bg-gray-100 rounded-r-xl transition-colors">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <button type="submit" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>В корзину</span>
+                            </button>
+                        </div>
+                    </form>
+                    <button class="px-6 py-3 border-2 border-primary-600 text-primary-600 rounded-xl font-semibold hover:bg-primary-50 transition-colors">
+                        Купить в 1 клик
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Short Specs -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                {% if product.max_speed %}
+                <div class="text-center p-4 bg-gray-50 rounded-xl">
+                    <i class="fas fa-tachometer-alt text-primary-500 text-2xl mb-2"></i>
+                    <p class="text-2xl font-bold">{{ product.max_speed }}</p>
+                    <p class="text-sm text-gray-500">км/ч макс.</p>
+                </div>
+                {% endif %}
+                {% if product.max_range %}
+                <div class="text-center p-4 bg-gray-50 rounded-xl">
+                    <i class="fas fa-road text-primary-500 text-2xl mb-2"></i>
+                    <p class="text-2xl font-bold">{{ product.max_range }}</p>
+                    <p class="text-sm text-gray-500">км запас</p>
+                </div>
+                {% endif %}
+                {% if product.motor_power %}
+                <div class="text-center p-4 bg-gray-50 rounded-xl">
+                    <i class="fas fa-bolt text-primary-500 text-2xl mb-2"></i>
+                    <p class="text-2xl font-bold">{{ product.motor_power }}</p>
+                    <p class="text-sm text-gray-500">Вт мотор</p>
+                </div>
+                {% endif %}
+                {% if product.weight %}
+                <div class="text-center p-4 bg-gray-50 rounded-xl">
+                    <i class="fas fa-weight text-primary-500 text-2xl mb-2"></i>
+                    <p class="text-2xl font-bold">{{ product.weight }}</p>
+                    <p class="text-sm text-gray-500">кг вес</p>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Delivery Info -->
+            <div class="space-y-3">
+                <div class="flex items-center gap-3 text-sm">
+                    <i class="fas fa-truck text-green-500"></i>
+                    <span>Бесплатная доставка при заказе от 10 000 ₽</span>
+                </div>
+                <div class="flex items-center gap-3 text-sm">
+                    <i class="fas fa-shield-alt text-green-500"></i>
+                    <span>Гарантия производителя</span>
+                </div>
+                <div class="flex items-center gap-3 text-sm">
+                    <i class="fas fa-undo text-green-500"></i>
+                    <span>Возврат в течение 14 дней</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tabs -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="border-b border-gray-100">
+            <div class="flex overflow-x-auto">
+                <button onclick="showTab('description')" id="tab-description" class="tab-btn px-6 py-4 font-medium text-primary-600 border-b-2 border-primary-600 whitespace-nowrap">
+                    Описание
+                </button>
+                <button onclick="showTab('specs')" id="tab-specs" class="tab-btn px-6 py-4 font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap">
+                    Характеристики
+                </button>
+                <button onclick="showTab('reviews')" id="tab-reviews" class="tab-btn px-6 py-4 font-medium text-gray-500 hover:text-gray-700 whitespace-nowrap">
+                    Отзывы ({{ review_count }})
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-6 md:p-8">
+            <!-- Description -->
+            <div id="content-description" class="tab-content">
+                <div class="prose max-w-none">
+                    {{ product.description|linebreaks }}
+                </div>
+            </div>
+            
+            <!-- Specs -->
+            <div id="content-specs" class="tab-content hidden">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="space-y-4">
+                        <h3 class="font-semibold text-lg">Основные характеристики</h3>
+                        <table class="w-full">
+                            <tbody class="divide-y divide-gray-100">
+                                {% if product.max_speed %}
+                                <tr>
+                                    <td class="py-3 text-gray-500">Максимальная скорость</td>
+                                    <td class="py-3 font-medium text-right">{{ product.max_speed }} км/ч</td>
+                                </tr>
+                                {% endif %}
+                                {% if product.max_range %}
+                                <tr>
+                                    <td class="py-3 text-gray-500">Запас хода</td>
+                                    <td class="py-3 font-medium text-right">{{ product.max_range }} км</td>
+                                </tr>
+                                {% endif %}
+                                {% if product.motor_power %}
+                                <tr>
+                                    <td class="py-3 text-gray-500">Мощность мотора</td>
+                                    <td class="py-3 font-medium text-right">{{ product.motor_power }} Вт</td>
+                                </tr>
+                                {% endif %}
+                                {% if product.battery_capacity %}
+                                <tr>
+                                    <td class="py-3 text-gray-500">Ёмкость батареи</td>
+                                    <td class="py-3 font-medium text-right">{{ product.battery_capacity }} Ач</td>
+                                </tr>
+                                {% endif %}
+                                {% if product.weight %}
+                                <tr>
+                                    <td class="py-3 text-gray-500">Вес</td>
+                                    <td class="py-3 font-medium text-right">{{ product.weight }} кг</td>
+                                </tr>
+                                {% endif %}
+                                {% if product.max_load %}
+                                <tr>
+                                    <td class="py-3 text-gray-500">Максимальная нагрузка</td>
+                                    <td class="py-3 font-medium text-right">{{ product.max_load }} кг</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="space-y-4">
+                        <h3 class="font-semibold text-lg">Дополнительно</h3>
+                        <table class="w-full">
+                            <tbody class="divide-y divide-gray-100">
+                                {% if product.wheel_size %}
+                                <tr>
+                                    <td class="py-3 text-gray-500">Размер колёс</td>
+                                    <td class="py-3 font-medium text-right">{{ product.wheel_size }}"</td>
+                                </tr>
+                                {% endif %}
+                                {% if product.waterproof_rating %}
+                                <tr>
+                                    <td class="py-3 text-gray-500">Степень защиты</td>
+                                    <td class="py-3 font-medium text-right">{{ product.waterproof_rating }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td class="py-3 text-gray-500">Мобильное приложение</td>
+                                    <td class="py-3 font-medium text-right">{% if product.has_app %}Есть{% else %}Нет{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 text-gray-500">Круиз-контроль</td>
+                                    <td class="py-3 font-medium text-right">{% if product.has_cruise_control %}Есть{% else %}Нет{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 text-gray-500">Артикул</td>
+                                    <td class="py-3 font-medium text-right">{{ product.sku }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reviews -->
+            <div id="content-reviews" class="tab-content hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-2xl font-bold">Отзывы покупателей</h3>
+                        <div class="flex items-center gap-2 mt-2">
+                            <div class="flex items-center gap-1">
+                                {% for i in "12345" %}
+                                <i class="fas fa-star {% if forloop.counter <= average_rating %}text-accent-500{% else %}text-gray-300{% endif %}"></i>
+                                {% endfor %}
+                            </div>
+                            <span class="font-medium">{{ average_rating }} из 5</span>
+                            <span class="text-gray-500">({{ review_count }} отзывов)</span>
+                        </div>
+                    </div>
+                    {% if user.is_authenticated %}
+                    {% if user_can_review %}
+                    <a href="{% url 'shop:add_review' product.slug %}" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-xl font-medium transition-colors">
+                        Написать отзыв
+                    </a>
+                    {% else %}
+                    <span class="text-gray-500">Вы уже оставили отзыв</span>
+                    {% endif %}
+                    {% else %}
+                    <a href="{% url 'accounts:login' %}" class="text-primary-600 hover:underline">
+                        Войдите, чтобы оставить отзыв
+                    </a>
+                    {% endif %}
+                </div>
+                
+                {% if reviews %}
+                <div class="space-y-6">
+                    {% for review in reviews %}
+                    <div class="border-b border-gray-100 last:border-0 pb-6 last:pb-0">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                                    <span class="font-medium text-primary-600">{{ review.user.first_name|first|default:review.user.username|first|upper }}</span>
+                                </div>
+                                <div>
+                                    <p class="font-medium">{{ review.user.get_full_name|default:review.user.username }}</p>
+                                    <p class="text-sm text-gray-500">{{ review.created_at|date:"d.m.Y" }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                {% for i in "12345" %}
+                                <i class="fas fa-star {% if forloop.counter <= review.rating %}text-accent-500{% else %}text-gray-300{% endif %}"></i>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <h4 class="font-semibold mb-2">{{ review.title }}</h4>
+                        <p class="text-gray-600 mb-3">{{ review.text }}</p>
+                        {% if review.pros %}
+                        <div class="flex items-start gap-2 text-sm mb-2">
+                            <i class="fas fa-plus-circle text-green-500 mt-0.5"></i>
+                            <span><strong>Достоинства:</strong> {{ review.pros }}</span>
+                        </div>
+                        {% endif %}
+                        {% if review.cons %}
+                        <div class="flex items-start gap-2 text-sm">
+                            <i class="fas fa-minus-circle text-red-500 mt-0.5"></i>
+                            <span><strong>Недостатки:</strong> {{ review.cons }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-12">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-comment-alt text-gray-400 text-3xl"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold mb-2">Пока нет отзывов</h4>
+                    <p class="text-gray-500">Будьте первым, кто оставит отзыв об этом товаре!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Related Products -->
+    {% if related_products %}
+    <div class="mt-12">
+        <h2 class="text-2xl font-bold mb-6">Похожие товары</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {% for product in related_products %}
+            <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                <a href="{{ product.get_absolute_url }}" class="block relative aspect-square bg-gray-100">
+                    {% with main_image=product.images.all|first %}
+                    {% if main_image %}
+                    <img src="{{ main_image.image.url }}" alt="{{ product }}" class="w-full h-full object-cover">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center">
+                        <i class="fas fa-bicycle text-gray-300 text-5xl"></i>
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                </a>
+                <div class="p-4">
+                    <a href="{{ product.brand.get_absolute_url }}" class="text-xs text-primary-600 font-medium">{{ product.brand.name }}</a>
+                    <a href="{{ product.get_absolute_url }}" class="block font-semibold text-gray-900 hover:text-primary-600 transition-colors line-clamp-2 mb-2 text-sm">
+                        {{ product.name }}
+                    </a>
+                    <p class="text-lg font-bold text-gray-900">{{ product.price|intcomma }} ₽</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function showTab(tabName) {
+        // Hide all content
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.getElementById('content-' + tabName).classList.remove('hidden');
+        
+        // Reset all buttons
+        document.querySelectorAll('.tab-btn').forEach(el => {
+            el.classList.remove('text-primary-600', 'border-b-2', 'border-primary-600');
+            el.classList.add('text-gray-500');
+        });
+        
+        // Activate current button
+        document.getElementById('tab-' + tabName).classList.add('text-primary-600', 'border-b-2', 'border-primary-600');
+        document.getElementById('tab-' + tabName).classList.remove('text-gray-500');
+    }
+    
+    // Show reviews tab if URL has #reviews
+    if (window.location.hash === '#reviews') {
+        showTab('reviews');
+    }
+</script>
+{% endblock %}

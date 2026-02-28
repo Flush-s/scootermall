@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Избранное - ScooterMall{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Избранное</h1>
+    
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Sidebar -->
+        <aside class="lg:w-64 flex-shrink-0">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 lg:sticky lg:top-24">
+                <nav class="space-y-1">
+                    <a href="{% url 'accounts:profile' %}" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-colors">
+                        <i class="fas fa-user"></i>
+                        <span>Профиль</span>
+                    </a>
+                    <a href="{% url 'accounts:favorites' %}" class="flex items-center gap-3 px-4 py-3 bg-primary-50 text-primary-600 rounded-xl font-medium">
+                        <i class="far fa-heart"></i>
+                        <span>Избранное</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-colors">
+                        <i class="fas fa-box"></i>
+                        <span>Мои заказы</span>
+                    </a>
+                    <a href="{% url 'accounts:support_tickets' %}" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-colors">
+                        <i class="fas fa-headset"></i>
+                        <span>Поддержка</span>
+                    </a>
+                    <div class="border-t border-gray-100 my-2"></div>
+                    <a href="{% url 'accounts:logout' %}" class="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Выйти</span>
+                    </a>
+                </nav>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="flex-1">
+            {% if favorites %}
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                {% for favorite in favorites %}
+                {% with product=favorite.product %}
+                <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                    <a href="{{ product.get_absolute_url }}" class="block relative aspect-square bg-gray-100">
+                        {% with main_image=product.images.all|first %}
+                        {% if main_image %}
+                        <img src="{{ main_image.image.url }}" alt="{{ product }}" class="w-full h-full object-cover">
+                        {% else %}
+                        <div class="w-full h-full flex items-center justify-center">
+                            <i class="fas fa-bicycle text-gray-300 text-6xl"></i>
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+                    </a>
+                    
+                    <div class="p-4">
+                        <a href="{{ product.brand.get_absolute_url }}" class="text-xs text-primary-600 font-medium">{{ product.brand.name }}</a>
+                        <a href="{{ product.get_absolute_url }}" class="block font-semibold text-gray-900 hover:text-primary-600 transition-colors line-clamp-2 mb-2">
+                            {{ product.name }}
+                        </a>
+                        <p class="text-xl font-bold text-gray-900 mb-3">{{ product.price|intcomma }} ₽</p>
+                        
+                        <div class="flex gap-2">
+                            <form action="{% url 'cart:cart_add' product.slug %}" method="post" class="flex-1">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white py-2 rounded-xl font-medium transition-colors text-sm">
+                                    В корзину
+                                </button>
+                            </form>
+                            <a href="{% url 'accounts:remove_favorite' product.slug %}" class="w-10 h-10 flex items-center justify-center border border-red-200 text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+                <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="far fa-heart text-gray-300 text-4xl"></i>
+                </div>
+                <h2 class="text-xl font-bold mb-3">Список избранного пуст</h2>
+                <p class="text-gray-500 mb-6">Добавляйте товары в избранное, чтобы не потерять их</p>
+                <a href="{% url 'shop:product_list' %}" class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-xl font-medium transition-colors">
+                    <i class="fas fa-th-large"></i>
+                    <span>В каталог</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
